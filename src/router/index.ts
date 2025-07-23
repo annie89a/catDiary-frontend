@@ -50,13 +50,35 @@ const router = createRouter({
   routes,
 });
 
-// Navigation guard
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore();
-  const protectedRoutes = ['/home', '/entry/list', '/entry/create'];
+  const protectedRoutes = ['/home', '/entry/list', '/entry/create', '/entry/edit'];
 
-  if (protectedRoutes.includes(to.path) && !userStore.user) {
-    return next('/login');
+  // Check if the route needs protection
+  const needsAuth = protectedRoutes.some((route) => to.path.startsWith(route));
+
+  if (needsAuth) {
+    const token = localStorage.getItem('jwtToken');
+
+    // If no token exists, redirect to login
+    if (!token) {
+      return next('/login');
+    }
+
+    // If token exists but no user in store, wait for initialization
+    if (!userStore.user) {
+      try {
+        // Try to initialize from token
+        await userStore.initializeFromToken();
+
+        // Check again after initialization
+        if (!userStore.user) {
+          return next('/login');
+        }
+      } catch (error) {
+        return next('/login');
+      }
+    }
   }
   next();
 });
