@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # cat-diary-frontend
 
 This template should help get you started developing with Vue 3 in Vite.
@@ -43,3 +44,7 @@ npm run test:unit
 ```sh
 npm run lint
 ```
+=======
+# catDiary-frontend
+FE- Cat diary
+>>>>>>> a3393e456ad0edc4e69747f2250d4f18c483a882
